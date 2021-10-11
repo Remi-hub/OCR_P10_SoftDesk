@@ -2,6 +2,7 @@ from rest_framework import serializers
 from user.models import CustomUser
 from django.contrib.auth.hashers import make_password
 
+
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(style={'input_type': 'password'})
 

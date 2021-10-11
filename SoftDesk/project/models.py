@@ -25,7 +25,7 @@ class Project(models.Model):
 class Issue(models.Model):
 
     def __str__(self):
-        return f'{self.title}'
+        return f'{self.title}, {self.issue_author_user}'
 
     title = models.CharField(max_length=120, blank=False)
     description = models.TextField(max_length=1500, blank=False)

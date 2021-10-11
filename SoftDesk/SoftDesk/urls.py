@@ -15,20 +15,26 @@ Including another URLconf
 """
 
 # from user.views import RegisterView
+from rest_framework_nested import routers
 from django.contrib import admin
 from django.urls import include, path
-from rest_framework import routers
-from project.views import ProjectViewSet
-from user.views import UserViewSet, CreateUserView
+from django.contrib.auth import views
+
+from project.views import ProjectViewSet, IssueViewSet, CommentViewSet
+from user.views import CreateUserView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
 
-
-router = routers.DefaultRouter()
+router = routers.SimpleRouter()
 router.register(r'projects', ProjectViewSet, basename='projects')
-router.register(r'user', UserViewSet, basename='user')
+
+projects_router = routers.NestedSimpleRouter(router, r'projects', lookup='project')
+projects_router.register(r'issues', IssueViewSet, basename='issues')
+
+issues_router = routers.NestedSimpleRouter(projects_router, r'issues', lookup='issue')
+issues_router.register(r'comments', CommentViewSet, basename='comments')
 
 
 urlpatterns = [
@@ -36,6 +42,9 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('signup/', CreateUserView.as_view(), name='signup'),
-    path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('login/', views.LoginView.as_view(), name='login'),
+    path(r'', include(router.urls)),
+    path(r'', include(projects_router.urls)),
+    path(r'', include(issues_router.urls))
 ]
