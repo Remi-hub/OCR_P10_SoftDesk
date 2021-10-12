@@ -1,18 +1,15 @@
 from rest_framework import viewsets
-from rest_framework import permissions
 from project.serializers import ProjectSerializer, IssueSerializer, CommentSerializer
 from project.models import Project, Issue, Comment
-from rest_framework.response import Response
-from rest_framework import status
 from django.db.models import Q
-from project.permissions import IsAuthenticatedAndAuthor, IsAuthenticatedAndContributor
+from project.permissions import ProjectAndIsAuthenticated, IssueAndIsAuthenticated, CommentAndIsAuthenticated
 
 # Create your views here.
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [ProjectAndIsAuthenticated]
     serializer_class = ProjectSerializer
 
     def get_queryset(self):
@@ -23,9 +20,18 @@ class ProjectViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 
+class UniqueProjectViewSet(viewsets.ModelViewSet):
+
+    permission_classes = [ProjectAndIsAuthenticated]
+    serializer_class = ProjectSerializer
+
+    def get_queryset(self):
+        return Project.objects.filter(id=self.kwargs['pk'])
+
+
 class IssueViewSet(viewsets.ModelViewSet):
 
-    permission_classes = [IsAuthenticatedAndAuthor, IsAuthenticatedAndContributor]
+    permission_classes = [IssueAndIsAuthenticated]
     serializer_class = IssueSerializer
 
     def get_queryset(self):
@@ -38,11 +44,12 @@ class IssueViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
 
-    permission_classes = [IsAuthenticatedAndAuthor, IsAuthenticatedAndContributor]
+    permission_classes = [CommentAndIsAuthenticated]
     serializer_class = CommentSerializer
 
     def get_queryset(self):
-        return Comment.objects.filter(issues=self.kwargs['issue_pk'])
+        return Comment.objects.filter(issues=self.kwargs['issue_pk'],
+                                      comment_author_user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(comment_author_user=self.request.user,

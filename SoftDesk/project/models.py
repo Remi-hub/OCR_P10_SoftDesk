@@ -5,9 +5,8 @@ from django.db import models
 TYPE_CHOICES = (('Backend', 'Backend'), ('Frontend', 'Frontend'), ('iOS', 'iOS'), ('Android', 'Android'))
 PRIORITY = (('Low', 'Low'), ('Medium', 'Medium'), ('High', 'High'))
 TAG = (('Bug', 'Bug'), ('Improvement', 'Improvement'), ('Task', 'Task'))
-STATUS = (('To Do', 'To do'), ('In Progress', 'In Progress'), ('Finished', 'Finished'))
+STATUS = (('To Do', 'To Do'), ('In Progress', 'In Progress'), ('Finished', 'Finished'))
 ROLE = (('Author', 'Author'), ('Contributor', 'Contributor'))
-# PERMISSION = (('Author', 'Author'), ('Contributor', 'Contributor'))
 
 
 class Project(models.Model):

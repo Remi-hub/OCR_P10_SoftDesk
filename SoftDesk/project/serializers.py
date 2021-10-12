@@ -23,7 +23,7 @@ class IssueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Issue
-        fields = ['issue_author_username', 'title', 'description', 'priority', 'tag',
+        fields = ['id', 'issue_author_username', 'title', 'description', 'priority', 'tag',
                   'status', 'issue_author_user', 'created_at']
 
         extra_kwargs = {
@@ -41,11 +41,16 @@ class IssueSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
 
+    comment_author_user = serializers.SerializerMethodField()
+
     class Meta:
         model = Comment
-        fields = ['id', 'issues', 'description', 'comment_author_user']
+        fields = ['id', 'issues', 'description', 'comment_author_user', 'comment_author_user']
 
         extra_kwargs = {
             'comment_author_user': {'read_only': True},
             'issues': {'read_only': True}
         }
+
+    def get_comment_author_user(self, obj):
+        return obj.comment_author_user.username

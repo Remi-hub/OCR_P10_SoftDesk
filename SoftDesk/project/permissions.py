@@ -1,26 +1,23 @@
 from rest_framework import permissions
+from project.models import Project, Issue, Comment
 
 
 class IsAuthenticatedAndAuthor(permissions.BasePermission):
-
-
-    def has_permission(self, request, view):
-        pass
 
     def has_object_permission(self, request, view, obj):
 
         if request.user.is_superuser:
             return True
 
-        if type(obj).__name__ == 'Project':
+        if isinstance(obj, Project):
             if obj.author == request.user:
                 return True
 
-        if type(obj).__name__ == 'Issue':
+        if isinstance(obj, Issue):
             if obj.issue_author_user == request.user:
                 return True
 
-        if type(obj).__name__ == 'Comment':
+        if isinstance(obj, Comment):
             if obj.comment_author_user == request.user:
                 return True
 
@@ -29,22 +26,19 @@ class IsAuthenticatedAndAuthor(permissions.BasePermission):
 
 class IsAuthenticatedAndContributor(permissions.BasePermission):
 
-    def has_permission(self, request, view):
-        pass
-
     def has_object_permission(self, request, view, obj):
         if request.user.is_superuser:
             return True
 
-        if type(obj).__name__ == 'Project':
+        if isinstance(obj, Project):
             if obj.contributors == request.user:
                 return True
 
-        if type(obj).__name__ == 'Issue':
+        if isinstance(obj, Issue):
             if obj.issue_author_user == request.user:
                 return True
 
-        if type(obj).__name__ == 'Comment':
+        if isinstance(obj, Comment):
             if obj.comment_author_user == request.user:
                 return True
 
@@ -58,34 +52,36 @@ class ProjectAndIsAuthenticated(permissions.BasePermission):
         if request.user.is_superuser:
             return True
 
-        if type(obj).__name__ == 'Project':
-            if obj.author == request.user:
-                return True
+        if obj.author == request.user:
+            return True
 
-        if type(obj).__name__ == 'Project':
-            if obj.contributors == request.user:
-                return True
+        if obj.contributors == request.user:
+            return True
+
+        return False
 
 
 class IssueAndIsAuthenticated(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
 
-        if obj.issue_author_user == request.user.id:
+        if request.user.is_superuser:
             return True
+
+        if obj.issue_author_user == request.user:
+            return True
+
+        return False
 
 
 class CommentAndIsAuthenticated(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
 
-        if obj.comment_author_user == request.user.id:
+        if request.user.is_superuser:
             return True
 
+        if obj.comment_author_user == request.user:
+            return True
 
-
-
-
-
-
-#TODO check les permissions
+        return False
