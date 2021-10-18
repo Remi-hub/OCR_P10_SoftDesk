@@ -1,8 +1,6 @@
 # OCR_P10_SoftDesk
 
-# SoftDesk
-
-#### LITReview est site qui permet a leurs utilisateur de poster ou de demander des critiques pour des livres.
+#### Ce projet est une API permettant la création de projet, ainsi que de problèmes et de commentaire relatif a celui-ci.
 
 ## Créer l'environnement virtuel
 Placez vous dans le dossier LITReview et tapez :
