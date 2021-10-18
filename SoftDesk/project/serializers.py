@@ -1,7 +1,5 @@
 from rest_framework import serializers
 from project.models import Project, Issue, Comment
-from user.serializers import UserSerializer
-from user.models import CustomUser
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -20,11 +18,12 @@ class ProjectSerializer(serializers.ModelSerializer):
 class IssueSerializer(serializers.ModelSerializer):
 
     issue_author_username = serializers.SerializerMethodField()
+    issue_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Issue
-        fields = ['id', 'issue_author_username', 'title', 'description', 'priority', 'tag',
-                  'status', 'issue_author_user', 'created_at']
+        fields = ['issue_id', 'issue_author_username', 'issue_author_user', 'title', 'description', 'priority', 'tag',
+                  'status', 'created_at']
 
         extra_kwargs = {
             'issue_author_user': {'read_only': True},
@@ -37,6 +36,9 @@ class IssueSerializer(serializers.ModelSerializer):
 
     def get_issue_author_username(self, obj):
         return obj.issue_author_user.username
+
+    def get_issue_id(self, obj):
+        return obj.id
 
 
 class CommentSerializer(serializers.ModelSerializer):

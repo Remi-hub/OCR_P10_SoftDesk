@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.contrib.auth import views
 
-from project.views import ProjectViewSet, UniqueProjectViewSet,IssueViewSet, CommentViewSet
+from project.views import ProjectViewSet, UniqueProjectViewSet,IssueViewSet, CommentViewSet, UniqueCommentViewSet
 from user.views import CreateUserView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -36,6 +36,7 @@ projects_router.register(r'issues', IssueViewSet, basename='issues')
 
 issues_router = routers.NestedSimpleRouter(projects_router, r'issues', lookup='issue')
 issues_router.register(r'comments', CommentViewSet, basename='comments')
+issues_router.register(r'comment', UniqueCommentViewSet, basename='comment')
 
 
 urlpatterns = [

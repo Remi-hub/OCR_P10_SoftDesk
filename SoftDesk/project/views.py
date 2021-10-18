@@ -14,7 +14,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Project.objects.filter(Q(author=self.request.user) |
-                                      Q(contributors=self.request.user))
+                                      Q(contributors=self.request.user)).distinct()
+
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -48,12 +49,26 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
     def get_queryset(self):
-        return Comment.objects.filter(issues=self.kwargs['issue_pk'],
-                                      comment_author_user=self.request.user)
+        print('je suis bien ici dans get query de comment')
+        return Comment.objects.filter(issues=self.kwargs['issue_pk']).filter(
+            Q(issues__project__contributors=self.request.user) |
+            Q(issues__project__author=self.request.user)
+            ).distinct()
 
     def perform_create(self, serializer):
         serializer.save(comment_author_user=self.request.user,
                         issues_id=self.kwargs['issue_pk'])
 
 
+class UniqueCommentViewSet(viewsets.ModelViewSet):
 
+    permission_classes = [CommentAndIsAuthenticated]
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        print('je suis dans le query set de UNIQUE comment')
+        print(f'ceci est le kwargs de UNIQUE  : {self.kwargs}' )
+        return Comment.objects.filter(id=self.kwargs['pk']).filter(
+            Q(issues__project__contributors=self.request.user) |
+            Q(issues__project__author=self.request.user)
+        ).distinct()
