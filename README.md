@@ -22,4 +22,4 @@ Une fois l'environnement virtuel activé, tapez :
 ### Démarrer le serveur
 
 Pour démarrer le serveur tapez :             
-`python3 manage.py runserver`  
+`py manage.py runserver`  
