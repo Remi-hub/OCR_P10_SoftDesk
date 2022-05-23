@@ -1,4 +1,4 @@
-# OCR_P10_SoftDesk
+# OCR_P10_Creation_API_SoftDesk
 
 #### Ce projet est une API permettant la création de projet, ainsi que de problèmes et de commentaire relatif a celui-ci.
 
